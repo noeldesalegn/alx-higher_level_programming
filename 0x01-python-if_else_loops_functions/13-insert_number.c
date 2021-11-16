@@ -1,63 +1,40 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include "lists.h"
 /**
- * print_listint - prints all elements of a listint_t list
- * @h: pointer to head of list
- * Return: number of nodes
+ * insert_node - Inserts a number into a given sorted singly-linked list
+ * @head: The pointer to the head of the linked list
+ * @number: The number to insert
+ *
+ * Return: The address of the new node, or NULL if it failed
  */
-size_t print_listint(const listint_t *h)
+listint_t *insert_node(listint_t **head, int number)
 {
-const listint_t *current;
-unsigned int n;
-current = h;
-n = 0;
-while (current != NULL)
+listint_t *cur_node = NULL, *node = NULL;
+if (head != NULL)
 {
-printf("%i\n", current->n);
-current = current->next;
-n++;
+node = malloc(sizeof(listint_t));
+if (node != NULL)
+{
+node->n = number;
+cur_node = *head;
+while ((cur_node != NULL) && (cur_node->n < number))
+{
+if (((cur_node->next != NULL) && (cur_node->next->n < number)))
+cur_node = cur_node->next;
+else
+break;
 }
-return (n);
-}
-/**
- * add_nodeint_end - adds a new node at the end of a listint_t list
- * @head: pointer to pointer of first node of listint_t list
- * @n: integer to be included in new node
- * Return: address of the new element or NULL if it fails
- */
-listint_t *add_nodeint_end(listint_t **head, const int n)
+if ((cur_node != NULL) && (cur_node->n < number))
 {
-listint_t *new;
-listint_t *current;
-current = *head;
-new = malloc(sizeof(listint_t));
-if (new == NULL)
-return (NULL);
-new->n = n;
-new->next = NULL;
-if (*head == NULL)
-*head = new;
+node->next = cur_node->next;
+cur_node->next = node;
+}
 else
 {
-while (current->next != NULL)
-current = current->next;
-current->next = new;
+node->next = *head;
+*head = node;
 }
-return (new);
 }
-/**
- * free_listint - frees a listint_t list
- * @head: pointer to list to be freed
- * Return: void
- */
-void free_listint(listint_t *head)
-{
-listint_t *current;
-while (head != NULL)
-{
-current = head;
-head = head->next;
-free(current);
 }
+return (node);
 }
